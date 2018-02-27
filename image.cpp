@@ -1,19 +1,23 @@
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
 #include "headers/image.h"
-
-#include <fstream>
 
 Image::Image(const int width, const int height)
 	: width(width), height(height)
 {
 	data = new Color[width * height];
+	depthBuffer = new float[width * height];
+	const float INF = 1e30;
+	for (int i=0; i<width*height; i++)
+		depthBuffer[i] = INF;
 }
 
 Image::~Image()
 {
 	delete[] data;
+	delete[] depthBuffer;
 }
 
 int Image::getWidth() const
@@ -26,11 +30,24 @@ int Image::getHeight() const
 	return height;
 }
 
-Color* Image::getPixel(int x, int y)
+Color Image::getPixel(int x, int y) const
 {
-	return data + (x + y * width);
+	return *(data + (x + y * width));
 }
 
+void Image::setPixel(int x, int y, const Color c)
+{
+	*(data + (x + y * width)) = c;
+}
+
+float Image::getZDepth(int x, int y) const
+{
+	return *(depthBuffer + (x + y * width));
+}
+
+void Image::setZDepth(int x, int y, const float z) {
+	*(depthBuffer + (x + y * width)) = z;
+}
 
 void Image::saveImagePPM(std::string filename) const {
 
@@ -41,7 +58,7 @@ void Image::saveImagePPM(std::string filename) const {
 		std::ofstream ofs(filename, std::ios::binary | std::ios::out);
 
 		ofs << "P6\n" << width << " " << height << " 255" << std::endl;
-		for (int i=0; i<height; i++) {
+		for (int i=height-1; i>=0; i--) {
 			for (int j=0; j<width; j++) {
 				ofs << (unsigned char)(std::max(0.0f, std::min(data[i*width + j].r, 1.0f)) * 255) 
 					<< (unsigned char)(std::max(0.0f, std::min(data[i*width + j].g, 1.0f)) * 255)

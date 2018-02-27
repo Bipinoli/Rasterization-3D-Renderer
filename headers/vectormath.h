@@ -26,6 +26,7 @@ struct Vector
 	Vector& operator *=(float f);
 	Vector& operator /=(float f);
 	Vector operator -() const;
+
 };
 
 float dot(Vector v1, Vector v2);
