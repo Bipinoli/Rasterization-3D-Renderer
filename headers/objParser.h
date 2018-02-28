@@ -6,6 +6,9 @@
 #include <vector>
 #include <cstring>
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 
 using namespace std;
 
@@ -21,6 +24,8 @@ public:
 
 		cout << "parsing " << fileName << endl;
 
+
+		srand(time(NULL));
 		int lineNum = 0;
 		int count = 0;
 
@@ -37,10 +42,10 @@ public:
 				ss << line;
 
 
-				string c;
-				ss >> c;
+				string ch;
+				ss >> ch;
 
-				if (c != "v" && c != "vn" && c != "f") {
+				if (ch != "v" && ch != "vn" && ch != "f") {
 					ss.clear();
 					continue;
 				}
@@ -51,17 +56,18 @@ public:
 				}
 
 				// -----------------------------------------
-				if (c == "v") 
+				if (ch == "v") 
 				{
 					float coords[3];
 					for (int i=0; i<3; i++) {
 						ss >> coords[i];
 					}
 					v.push_back(Point(coords[0], coords[1], coords[2]));
+
 				}
 
 				// ----------------------------------------- 
-				else if (c == "vn") 
+				else if (ch == "vn") 
 				{
 					float coords[3];
 					for (int i=0; i<3; i++) {
@@ -71,7 +77,7 @@ public:
 				}
 
 				// -----------------------------------------
-				else if (c == "f") {
+				else if (ch == "f") {
 					vector<string> strs;
 
 					string st;
@@ -122,8 +128,23 @@ public:
 					// 	cout << v[p[i]-1].x << "," << v[p[i]-1].y << "," << v[p[i]-1].z << endl;
 					// }
 
-					Triangle t({v[p[0]-1], v[p[1]-1], v[p[2]-1]});
-					t.n0 = n[0]; t.n1 = n[1]; t.n2 = n[2];
+					// assign random color to that vertex
+					Color c;
+					int choice = rand() % 3;
+					switch (choice) {
+						case 0:
+							c = Color(1,0,0);
+							break;
+						case 1:
+							c = Color(0,1,0);
+							//break;
+						case 2:
+							c = Color(0,0,1);
+					}
+
+					Triangle t({v[p[0]-1], v[p[1]-1], v[p[2]-1], 
+								c, c, c,
+								vn[n[0]-1], vn[n[1]-1], vn[n[2]-1]});
 					triangles.push_back(t);
 				}
 

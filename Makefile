@@ -1,6 +1,6 @@
 # Makefile for the Rastarizer project
 
-OBJS = color.o image.o vectormath.o model.o
+OBJS = color.o image.o vectormath.o matrix.o
 
 main: main.cpp $(OBJS)
 	g++ -o main main.cpp $(OBJS)
@@ -14,8 +14,8 @@ image.o: image.cpp
 vectormath.o: vectormath.cpp
 	g++ -c vectormath.cpp
 
-model.o: model.cpp
-	g++ -c model.cpp
+matrix.o: matrix.cpp
+	g++ -c matrix.cpp
 
 clean:
 	del $(OBJS)

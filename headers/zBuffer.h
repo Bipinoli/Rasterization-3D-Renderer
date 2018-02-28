@@ -76,7 +76,7 @@ float findIllumination(const Point& point, const Vector& normal, const LightSrc&
 void zBuffer(const LightSrc& light, const Camera& camera, 
 			 const Scene& scene, Image& image) 
 {
-	const float ka = 0.4, kd = 0.3, ks = 0.3, ns = 2; 
+	const float ka = 0.1, kd = 0.6, ks = 0.3, ns = 128; 
 
     const int width = image.getWidth();
     const int height = image.getHeight();

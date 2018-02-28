@@ -7,15 +7,19 @@
 
 struct Camera 
 {
+    Point position;
+
     float fov;
     int width, height;
     float w, h; // half of width and height in near plane
     float near;
 
-    Camera(int width, int height, float fov = M_PI / 3, float near = 1) {
+    Camera(const Point& pos, int width, int height, float fov = M_PI / 3, float near = 1) {
         // 60 deg field of vision
         this->width = width; this->height = height;
         this->fov = fov; this->near = near;
+
+        this->position = pos;
 
         h = tan(fov/2);
         w = h * (width / height);
