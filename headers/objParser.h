@@ -194,8 +194,8 @@ public:
 
 
 		cout << fileName << " parsed successfully. " << endl;
-		cout << "vertices length: " << v.size() << endl;
-		cout << "triangles size: " << triangles.size() << endl;
+		cout << "No. of vertices: " << v.size() << endl;
+		cout << "No. of triangles: " << triangles.size() << endl;
 	}
 
 };

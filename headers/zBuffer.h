@@ -7,6 +7,7 @@
 #include "scene.h"
 #include "image.h"
 #include "lightSrc.h"
+#include "transform.h"
 
 #include <iostream>
 using namespace std;
@@ -73,7 +74,7 @@ float findIllumination(const Point& point, const Vector& normal, const LightSrc&
 }
 
 
-void zBuffer(const LightSrc& light, const Camera& camera, 
+void zBuffer(const LightSrc& light, Camera& camera, 
 			 const Scene& scene, Image& image) 
 {
 	const float ka = 0.1, kd = 0.6, ks = 0.3, ns = 128; 
@@ -162,8 +163,47 @@ void zBuffer(const LightSrc& light, const Camera& camera,
 
                         image.setPixel(x, y, color);
 
+                        // ----------------------------------------------------------------------
+                        // Identify if that pixel is in shadow
 
-                        // cout << "depth[" << x << "," << y << "] : " << image.getZDepth(x,y);
+                        // const float zShadow = (hitPoint - light.position).length();
+                        const float zShadow = -(hitPoint.z - light.position.z);
+                        // this demands that light source be placed facing front side
+                        // as hitPoint.z should be more forward in the -ve z axis
+
+                        // project hitPoint on the screen as viewed from the light source
+                        // Since we have already populated shadowBuffer 
+                        // so on the projected point if the shadowDepth is < zShadow 
+                        // then there is other object more close to shadow than this
+                        // so this pixel must be in shadow
+
+                        // lets not bother about oerienting the camera at light source
+                        // to view the scene properly
+                        // warning: this may result in some part of scene not visible to 
+                        //      the camera at light source
+                        //   this can cause some wierd looking shadow 
+                        //   but that can be avoided by readjusting the position of
+                        //   light source so lets go with that
+
+
+                        translatePoint(camera.position, light.position);
+                        translatePoint(hitPoint, light.position);
+
+                        Point shadowPixel = camera.rastarize(hitPoint);
+
+                        if (shadowPixel.z == 0) {
+                            // not backside from there
+
+                            float zShadow2 = image.getShadowDepth(shadowPixel.x, shadowPixel.y);
+                            if (zShadow2 < zShadow) {
+                                // shadow 
+                                cout << "shadow found" << endl;
+                                image.setPixel(x, y, image.getPixel(x,y)*0.0);
+                            }
+                        }
+
+                        translatePoint(camera.position, -light.position);
+
                     }
                 }
             }
@@ -174,3 +214,86 @@ void zBuffer(const LightSrc& light, const Camera& camera,
 
 }
 
+void findShadow(const LightSrc& light, Camera& camera, 
+                Scene& scene, Image& image) 
+{
+
+    // view from the light source 
+    // for which transform camera to the light source
+
+    // lets not bother about oerienting the camera at light source
+    // to view the scene properly
+    // warning: this may result in some part of scene not visible to 
+    //      the camera at light source
+    //   this can cause some wierd looking shadow 
+    //   but that can be avoided by readjusting the position of
+    //   light source, so lets go with that
+    translatePoint(camera.position, light.position);    
+    sceneTransform(scene, light.position);
+
+
+    const int width = image.getWidth();
+    const int height = image.getHeight();
+
+    for (const auto& triangle: scene.triangles) {
+
+
+        // project triangle vertices
+        Point prjPnt0 = camera.rastarize(triangle.v0);
+        Point prjPnt1 = camera.rastarize(triangle.v1);
+        Point prjPnt2 = camera.rastarize(triangle.v2);
+        Point verts[] = {prjPnt0, prjPnt1, prjPnt2};
+        Triangle prjTriangle({prjPnt0, prjPnt1, prjPnt2});
+
+        if (prjPnt0.z != 0 || prjPnt1.z != 0 || prjPnt2.z != 0) {
+            // point is backside of the camera so is not visible
+            continue;
+        }
+
+
+        // find enveloping 2D box around the triangle
+        int envXmin, envXmax, envYmin, envYmax;
+        const int INF = 1e9;
+        envXmin = envYmin = INF; envXmax = envYmax = -INF;
+
+        for (int i=0; i<3; i++) {
+            envXmin = std::min(envXmin, (int)verts[i].x);
+            envXmax = std::max(envXmax, (int)verts[i].x);
+            envYmin = std::min(envYmin, (int)verts[i].y);
+            envYmax = std::max(envYmax, (int)verts[i].y);
+        }
+
+        envXmin = std::max(0, std::min(envXmin, width-1));
+        envXmax = std::max(0, std::min(envXmax, width-1));
+        envYmin = std::max(0, std::min(envYmin, height-1));
+        envYmax = std::max(0, std::min(envYmax, height-1));
+
+
+        // work with pixels within the envelope
+        for (int y = envYmin; y <= envYmax; y++) {
+            for (int x = envXmin; x <= envXmax; x++) {
+
+                Point P({x+0.5f, y+0.5f, 0});
+                if (insideTriangle(P, prjTriangle)) {
+
+                    Point baryCentric = baryCentricCoordinate(P, prjTriangle);
+
+                    // as zBaryCen is a distance it is made +ve
+                    float zBaryCen = -triangle.v0.z * baryCentric.x + 
+                                     -triangle.v1.z * baryCentric.y + 
+                                     -triangle.v2.z * baryCentric.z;
+
+
+                    if (zBaryCen < image.getShadowDepth(x, y)) {
+                        image.setShadowDepth(x, y, zBaryCen);
+                    }
+                }
+            }
+        }
+
+    }
+
+    // transform camera to the original position
+    translatePoint(camera.position, -light.position);    
+    sceneTransform(scene, -light.position);
+}

@@ -9,9 +9,11 @@ Image::Image(const int width, const int height)
 {
 	data = new Color[width * height];
 	depthBuffer = new float[width * height];
-	const float INF = 1e30;
-	for (int i=0; i<width*height; i++)
-		depthBuffer[i] = INF;
+	shadowBuffer = new float[width * height];
+	for (int i=0; i<width*height; i++) {
+		depthBuffer[i] = Image::INF;
+		shadowBuffer[i] = Image::INF;
+	}
 }
 
 Image::~Image()
@@ -45,8 +47,17 @@ float Image::getZDepth(int x, int y) const
 	return *(depthBuffer + (x + y * width));
 }
 
+float Image::getShadowDepth(int x, int y) const
+{
+	return *(shadowBuffer + (x + y * width));
+}
+
 void Image::setZDepth(int x, int y, const float z) {
 	*(depthBuffer + (x + y * width)) = z;
+}
+
+void Image::setShadowDepth(int x, int y, const float z) {
+	*(shadowBuffer + (x + y * width)) = z;
 }
 
 void Image::saveImagePPM(std::string filename) const {
