@@ -3,6 +3,9 @@ Rastarization based 3D Renderer with Z-buffer and Phong illumination.
 
 ## current progress
 
+### car model displayed after normalization
+![raycapturecar](https://user-images.githubusercontent.com/11765482/36802536-46eea118-1cdd-11e8-8dca-a18904c5d548.PNG)
+
 ### after polygon face is converted to triangular faces
 #### all triangular faces are found ( no black triangles )
 ![rastercapturetriangular](https://user-images.githubusercontent.com/11765482/36799122-7ca5e8a6-1cd4-11e8-9445-0e820868f879.PNG)
