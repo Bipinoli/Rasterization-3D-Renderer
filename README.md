@@ -3,6 +3,14 @@ Rastarization based 3D Renderer with Z-buffer and Phong illumination.
 
 ## current progress
 
+### after polygon face is converted to triangular faces
+#### all triangular faces are found ( no black triangles )
+![rastercapturetriangular](https://user-images.githubusercontent.com/11765482/36799122-7ca5e8a6-1cd4-11e8-9445-0e820868f879.PNG)
+
+### before polygon face is converted to triangular faces
+#### some faces are missing ( black triangles )
+![raycapturewithshadow](https://user-images.githubusercontent.com/11765482/36798995-31d0c1ac-1cd4-11e8-839d-13d6149792e7.PNG)
+
 ### parsed from obj file
 ![rastercapture3](https://user-images.githubusercontent.com/11765482/36789151-9e3c1600-1cb8-11e8-98b1-9a8031e82be7.PNG)
 
