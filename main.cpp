@@ -22,7 +22,19 @@ int main(int argc, char** argv) {
     const int width = 1080;
     const int height = 720;
 
-    const Point cameraPosition(2500, 1000,-15000);
+    Point cameraPosition(1000, 1000,-1200);
+    if (argc >= 5) {
+        stringstream ss;
+        ss << argv[2];
+        ss >> cameraPosition.x;
+        ss.clear();
+        ss << argv[3];
+        ss >> cameraPosition.y;
+        ss.clear();
+        ss << argv[4];
+        ss >> cameraPosition.z;
+        ss.clear();
+    }
 
     Image image(width, height);
     Camera camera(cameraPosition, width, height);
@@ -31,7 +43,7 @@ int main(int argc, char** argv) {
 
 
     ObjParser objParser;
-    objParser.parse("House.obj.triangular");
+    objParser.parse(argv[1]);
 
 
     for(auto t: objParser.triangles) {
@@ -45,8 +57,8 @@ int main(int argc, char** argv) {
     }
 
     world2view(scene, camera, light);
-    rotateCameraX(-10, scene, light);
-    rotateCameraY(20, scene, light);
+    rotateCameraX(-40, scene, light);
+    rotateCameraY(35, scene, light);
 
     for (auto t: scene.triangles) {
         // cout << t.v0.x << ", " << t.v0.y << ", " << t.v0.z << endl;

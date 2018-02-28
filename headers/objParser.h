@@ -50,7 +50,7 @@ public:
 					continue;
 				}
 
-				if (count >= 500) {
+				if (count >= 2000) {
 					count = 0;
 					cout << "line: " << lineNum << endl;
 				}
