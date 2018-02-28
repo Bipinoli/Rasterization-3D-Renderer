@@ -133,13 +133,13 @@ public:
 					int choice = rand() % 3;
 					switch (choice) {
 						case 0:
-							c = Color(1,0,0);
+							c = Color(1,1,0);
 							break;
 						case 1:
 							c = Color(0,1,0);
 							//break;
 						case 2:
-							c = Color(0,0,1);
+							c = Color(0,1,0);
 					}
 
 					Triangle t({v[p[0]-1], v[p[1]-1], v[p[2]-1], 

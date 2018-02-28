@@ -22,16 +22,16 @@ int main(int argc, char** argv) {
     const int width = 1080;
     const int height = 720;
 
-    const Point cameraPosition(2500, 1000,-5000);
+    const Point cameraPosition(2500, 1000,-15000);
 
     Image image(width, height);
     Camera camera(cameraPosition, width, height);
-    LightSrc light(Point(-100, 100, -900), 1400.0f);
+    LightSrc light(Point(-100, 100, -900), 14000.0f);
     Scene scene;
 
 
     ObjParser objParser;
-    objParser.parse("box.obj.clean");
+    objParser.parse("House.obj.triangular");
 
 
     for(auto t: objParser.triangles) {
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 
     }
 
-    findShadow(light, camera, scene, image);
+    // findShadow(light, camera, scene, image);
     zBuffer(light, camera, scene, image);
 
 
