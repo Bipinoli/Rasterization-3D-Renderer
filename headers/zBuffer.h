@@ -1,11 +1,15 @@
 #pragma once
 
+#include <cmath>
 
 #include "vectormath.h"
 #include "camera.h"
 #include "scene.h"
 #include "image.h"
+#include "lightSrc.h"
 
+#include <iostream>
+using namespace std;
 
 
 bool insideTriangle(const Point& Q, const Triangle& triangle) {
@@ -37,7 +41,42 @@ Point baryCentricCoordinate(const Point& Q, const Triangle& triangle) {
 }
 
 
-void zBuffer(const Camera& camera, const Scene& scene, Image& image) {
+Vector reflect(const Vector& light, const Vector& normal) {
+
+	// it needs to have a unit normal vector
+	return light - 2 * dot(light, normal) * normal;
+}
+
+
+float findIllumination(const Point& point, const Vector& normal, const LightSrc& light,
+					   const float ka, const float kd, const float ks, const float ns = 16)
+{
+	const Vector L = point - light.position;
+	Vector N = normal; N.normalize();
+	Vector R = reflect(L, N).normalized();
+	Vector V = point; V.normalize();
+	// because viewing from the origin
+
+
+	// Ambient + Diffused + Specular
+	float intensity = ka + 
+					  kd * -dot(L, N) * light.intensity * (1 / L.length2()) +
+					  ks * pow(-dot(R, V), ns) * light.intensity * (1 / L.length2());
+
+	// cout << "dot(L,N): " << dot(L,N) << endl;
+	// cout << "dot(R,V): " << dot(R,V) << endl;
+	// cout << "pow(-dot(R, V), ns): " << pow(-dot(R, V), ns) << endl;
+	// cout << "kd part: " << kd * -dot(L, N) * light.intensity * (1 / L.length2()) << endl;
+	// cout << "ks part: " << ks * pow(-dot(R, V), ns) * light.intensity * (1 / L.length2()) << endl;
+
+	return intensity;
+}
+
+
+void zBuffer(const LightSrc& light, const Camera& camera, 
+			 const Scene& scene, Image& image) 
+{
+	const float ka = 0.4, kd = 0.3, ks = 0.3, ns = 2; 
 
     const int width = image.getWidth();
     const int height = image.getHeight();
@@ -81,12 +120,6 @@ void zBuffer(const Camera& camera, const Scene& scene, Image& image) {
         envYmax = std::max(0, std::min(envYmax, height-1));
 
 
-        // cout << "envXmin: " << envXmin
-        //      << "envXmax: " << envXmax
-        //      << "envYmin: " << envYmin 
-        //      << "envYmax: " << envYmax << endl;
-
-
         // work with pixels within the envelope
         for (int y = envYmin; y <= envYmax; y++) {
             for (int x = envXmin; x <= envXmax; x++) {
@@ -96,9 +129,10 @@ void zBuffer(const Camera& camera, const Scene& scene, Image& image) {
 
                     Point baryCentric = baryCentricCoordinate(P, prjTriangle);
 
-                    float zBaryCen = triangle.v0.z * baryCentric.x + 
-                                     triangle.v1.z * baryCentric.y + 
-                                     triangle.v2.z * baryCentric.z;
+                    // as zBaryCen is a distance it is made +ve
+                    float zBaryCen = -triangle.v0.z * baryCentric.x + 
+                                     -triangle.v1.z * baryCentric.y + 
+                                     -triangle.v2.z * baryCentric.z;
 
 
                     if (zBaryCen < image.getZDepth(x, y)) {
@@ -109,9 +143,23 @@ void zBuffer(const Camera& camera, const Scene& scene, Image& image) {
                         // but when the triangle is skewed color distribution mustn't be uniform
                         // so color should be adjusted according to the depth
 
+
+                        Point hitPoint(x+0.5f, y+0.5f, -zBaryCen);
+
+
                         Color color = (triangle.c0*(1/triangle.v0.z) * baryCentric.x + 
                                       triangle.c1*(1/triangle.v1.z) * baryCentric.y + 
-                                      triangle.c2*(1/triangle.v2.z) * baryCentric.z) * zBaryCen;
+                                      triangle.c2*(1/triangle.v2.z) * baryCentric.z) * -zBaryCen;
+
+                        // Phong model, finding Normal at a point by interpolation
+                        Vector normal = (triangle.n0*(1/triangle.v0.z) * baryCentric.x + 
+                                      	triangle.n1*(1/triangle.v1.z) * baryCentric.y + 
+                                      	triangle.n2*(1/triangle.v2.z) * baryCentric.z) * -zBaryCen;
+
+
+                        color *= findIllumination(hitPoint, normal, light,
+                        						  ka, kd, ks, ns);
+
                         image.setPixel(x, y, color);
 
 

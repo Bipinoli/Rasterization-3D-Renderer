@@ -14,8 +14,8 @@ struct Vector
 
 	virtual ~Vector();
 
-	inline float length2();
-	inline float length();
+	inline float length2() const;
+	inline float length() const;
 
 	float normalize();
 	Vector normalized();
@@ -33,12 +33,12 @@ float dot(Vector v1, Vector v2);
 Vector cross(Vector v1, Vector v2);
 
 
-inline float Vector::length2()
+inline float Vector::length2() const
 {
 	return x*x + y*y + z*z;
 }
 
-inline float Vector::length()
+inline float Vector::length() const
 {
 	return std::sqrt(length2());
 }
