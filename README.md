@@ -4,6 +4,7 @@ Rastarization based 3D Renderer with Z-buffer and Phong illumination.
 ## current progress
 
 ![dragon4](https://user-images.githubusercontent.com/11765482/36935161-297e608c-1f1c-11e8-836b-895cd0fa08a5.PNG)
+![gun2](https://user-images.githubusercontent.com/11765482/36935548-4886b510-1f21-11e8-9524-4053df829632.PNG)
 ![dragon2](https://user-images.githubusercontent.com/11765482/36934931-f716978e-1f18-11e8-9798-3e8b5dcecb11.PNG)
 ![dragon1](https://user-images.githubusercontent.com/11765482/36934934-f99962a2-1f18-11e8-91f8-25f1963c24c6.PNG)
 
