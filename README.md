@@ -3,6 +3,9 @@ Rastarization based 3D Renderer with Z-buffer and Phong illumination.
 
 ## current progress
 
+### Shield of a warrior: after bug fix on translate function :)
+![rastercapturekabach](https://user-images.githubusercontent.com/11765482/36933366-a984b6c2-1eff-11e8-908f-d5f5a3c8623b.PNG)
+
 ### car model displayed after normalization
 ![raycapturecar](https://user-images.githubusercontent.com/11765482/36802536-46eea118-1cdd-11e8-8dca-a18904c5d548.PNG)
 
