@@ -30,7 +30,6 @@ public:
 		int count = 0;
 
 		ifstream objFile(fileName);
-		stringstream ss;
 		string line;
 
 		if (objFile.is_open()) {
@@ -38,20 +37,20 @@ public:
 				
 				lineNum++; count++;
 				
-				ss.clear();
+				stringstream ss(line);
 				ss << line;
-
 
 				string ch;
 				ss >> ch;
 
-				if (ch != "v" && ch != "vn" && ch != "vt" && ch != "f") {
-					ss.clear();
+				if (ch != "v" && ch != "vn" && ch != "f") {
 					continue;
 				}
 
 				// if there is huge polymesh just show how much has been parsed
-				if (count >= 25000) {
+				const int THRESHOLD_COUNT = 25000;
+
+				if (count >= THRESHOLD_COUNT) {
 					count = 0;
 					cout << "Parsed upto line: " << lineNum << endl;
 				}
@@ -77,20 +76,11 @@ public:
 					vn.push_back(Point(coords[0], coords[1], coords[2]));
 				}
 
-				// ----------------------------------------- 
-				else if (ch == "vt") 
-				{
-					
-				}
-
 				// -----------------------------------------
 				else if (ch == "f") {
 					vector<string> strs;
 
 					string st;
-					// while (getline(ss, st, ' ')) {
-					// 	strs.push_back(st);
-					// }
 
 					// there will always be a triangle as a face
 					// if not clean the obj file first before parsing it
@@ -136,12 +126,6 @@ public:
 						}
 					}
 
-
-					// cout << "Triangle: " << endl;
-					// for (int i=0; i<3; i++) {
-					// 	cout << v[p[i]-1].x << "," << v[p[i]-1].y << "," << v[p[i]-1].z << endl;
-					// }
-
 					// assign random color to that vertex
 					Color c;
 					int choice = rand() % 3;
@@ -172,44 +156,5 @@ public:
 		cout << "No. of triangles: " << triangles.size() << endl;
 	}
 
-
-	void simpleParse(string fileName) {
-		ifstream objFile(fileName);
-		stringstream ss;
-		string line;
-
-		if (objFile.is_open()) {
-			while (getline(objFile, line)) {
-				
-				ss.clear();
-				ss << line;
-
-				char c;
-				ss >> c;
-				if (c == 'v') {
-					float coords[3];
-					for (int i=0; i<3; i++) {
-						ss >> coords[i];
-					}
-					v.push_back(Point(coords[0], coords[1], coords[2]));
-				}
-
-				else {
-					int a, b, c;
-					ss >> a >> b >> c;
-					a--; b--; c--; 
-					triangles.push_back(Triangle(v[a], v[b], v[c]));
-				}
-
-
-			}
-			objFile.close();
-		}
-
-
-		cout << fileName << " parsed successfully!. " << endl;
-		cout << "No. of vertices: " << v.size() << endl;
-		cout << "No. of triangles: " << triangles.size() << endl;
-	}
 
 };

@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 
     Image image(width, height);
     Camera camera(cameraPosition, width, height);
-    LightSrc light(lightPosition, 1000.0f);
+    LightSrc light(lightPosition, 1300.0f);
     Scene scene;
 
 
