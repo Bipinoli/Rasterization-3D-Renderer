@@ -1,12 +1,35 @@
 # Rastarization-3D-Renderer
 Rastarization based 3D Renderer with Z-buffer and Phong illumination.
 
+### How to run?
+Requirements: C++11, Python
+<ul>
+  <li> run Makefile 
+    <code> make </code> </li>
+  <li> clean obj file with objParser.py 
+    <code> python objParser gun.obj </code> </li>
+  <li> objParser will produce .clean file, run that as a command line argument 
+    <code> main gun.obj.clean </code>
+    This will auto adjust camera and light in the scene.
+  <li> output will be produced as the .ppm image. You can open it using Photoshop or other tools. </li>
+  <p>
+    For manual adjustments, provide more command line args. </p>
+    <p>
+    It takes the form: <br/><code> main objFile camPosX camPosY camPosZ lightPosX lightPosY lightPosZ rotateDegreeX rotateDegreeY rotateDegreeZ </code> </p>
+    <p>e.g. <code> main gun.obj.clean 100 100 100 200 200 200 -30 30 60 </code></p>
+  </p>
+</ul>
+<code>
+  
+</code>
+
 ## current progress
 
 ![dragon4](https://user-images.githubusercontent.com/11765482/36935161-297e608c-1f1c-11e8-836b-895cd0fa08a5.PNG)
 ![gun2](https://user-images.githubusercontent.com/11765482/36935548-4886b510-1f21-11e8-9524-4053df829632.PNG)
 ![dragon2](https://user-images.githubusercontent.com/11765482/36934931-f716978e-1f18-11e8-9798-3e8b5dcecb11.PNG)
 ![dragon1](https://user-images.githubusercontent.com/11765482/36934934-f99962a2-1f18-11e8-91f8-25f1963c24c6.PNG)
+![harrypotter2](https://user-images.githubusercontent.com/11765482/36936033-c2e5eef6-1f27-11e8-904e-a087a0be88ff.PNG)
 
 ### Shield of a warrior: after bug fix on translate function :)
 ![rastercapturekabach](https://user-images.githubusercontent.com/11765482/36933366-a984b6c2-1eff-11e8-908f-d5f5a3c8623b.PNG)
