@@ -3,7 +3,7 @@ import re
 import os
 
 srcFile = sys.argv[1]
-destFile = sys.argv[1] + '.clean'
+destFile = sys.argv[1] + '.temp'
 
 srcFile = open(srcFile, "r")
 destFile = open(destFile, "w")
@@ -23,8 +23,8 @@ destFile.close()
 # generate triangluar faces from the polygon face
 # normalize coordinate in the range 0 to 1
 
-srcFile = sys.argv[1] + '.clean'
-finalFile = sys.argv[1] + '.triangular'
+srcFile = sys.argv[1] + '.temp'
+finalFile = sys.argv[1] + '.clean'
 
 srcFile = open(srcFile, "r")
 finalFile = open(finalFile, "w")
@@ -52,7 +52,7 @@ for line in srcFile:
 		if (len(strs) >= 3):
 			if (toDivide == None):
 				toDivide = 10**digits(strs[1])
-			for i in range(1, len(strs)):
+			for i in range(1, len(strs)):	
 				strs[i] = str(float(strs[i])/toDivide)
 
 		for i in strs:
@@ -63,4 +63,4 @@ for line in srcFile:
 srcFile.close()
 finalFile.close()
 
-os.remove(sys.argv[1] + '.clean')
+os.remove(sys.argv[1] + '.temp')

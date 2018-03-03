@@ -10,6 +10,8 @@
 
 #define PI M_PI
 
+const float NORMALIZED_2_RASTER_EXPANSION_SCALE = 1000;
+
 
 HomogenVector& transformVector(Matrix& m, HomogenVector& v) {
 
@@ -87,7 +89,7 @@ void translatePoint(Point& p, const Point& newOrigin) {
 
     HomogenVector p2(p);
     double tx = (double)newOrigin.x, ty = (double)newOrigin.y, tz = (double)newOrigin.z;
-    Matrix scaleMat = translate(tx, ty, tz);
+    Matrix scaleMat = translate(-tx, -ty, -tz);
     p2 = transformVector(scaleMat, p2);
     p = p2.generateVector();
 }
@@ -178,11 +180,11 @@ void sceneTransform(Scene& scene, const Point& point) {
     }
 }
 
-void world2view(Scene& scene, const Camera& camera, LightSrc& light) {
+void world2view(Scene& scene, Camera& camera, LightSrc& light) {
 
     translatePoint(light.position, camera.position);
 
-    const float sc = 1000;
+    const float sc = NORMALIZED_2_RASTER_EXPANSION_SCALE;
 
     for (auto& t: scene.triangles) {
         scalePoint(t.v0, sc);
@@ -194,4 +196,6 @@ void world2view(Scene& scene, const Camera& camera, LightSrc& light) {
     }
 
     sceneTransform(scene, camera.position);
+
+    camera.position.x = camera.position.y = camera.position.z = 0;
 }

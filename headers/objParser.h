@@ -45,14 +45,15 @@ public:
 				string ch;
 				ss >> ch;
 
-				if (ch != "v" && ch != "vn" && ch != "f") {
+				if (ch != "v" && ch != "vn" && ch != "vt" && ch != "f") {
 					ss.clear();
 					continue;
 				}
 
-				if (count >= 2000) {
+				// if there is huge polymesh just show how much has been parsed
+				if (count >= 25000) {
 					count = 0;
-					cout << "line: " << lineNum << endl;
+					cout << "Parsed upto line: " << lineNum << endl;
 				}
 
 				// -----------------------------------------
@@ -76,12 +77,25 @@ public:
 					vn.push_back(Point(coords[0], coords[1], coords[2]));
 				}
 
+				// ----------------------------------------- 
+				else if (ch == "vt") 
+				{
+					
+				}
+
 				// -----------------------------------------
 				else if (ch == "f") {
 					vector<string> strs;
 
 					string st;
-					while (getline(ss, st, ' ')) {
+					// while (getline(ss, st, ' ')) {
+					// 	strs.push_back(st);
+					// }
+
+					// there will always be a triangle as a face
+					// if not clean the obj file first before parsing it
+					for (int i=0; i<3; i++) {
+						ss >> st;
 						strs.push_back(st);
 					}
 
@@ -134,7 +148,7 @@ public:
 					switch (choice) {
 						case 0:
 							c = Color(1,1,0);
-							break;
+							//break;
 						case 1:
 							c = Color(0,1,0);
 							//break;
@@ -153,9 +167,9 @@ public:
 		}
 
 
-		cout << fileName << " parsed successfully. " << endl;
-		cout << "vertices length: " << v.size() << endl;
-		cout << "triangles size: " << triangles.size() << endl;
+		cout << fileName << " parsed successfully!. " << endl;
+		cout << "No. of vertices: " << v.size() << endl;
+		cout << "No. of triangles: " << triangles.size() << endl;
 	}
 
 
@@ -193,7 +207,7 @@ public:
 		}
 
 
-		cout << fileName << " parsed successfully. " << endl;
+		cout << fileName << " parsed successfully!. " << endl;
 		cout << "No. of vertices: " << v.size() << endl;
 		cout << "No. of triangles: " << triangles.size() << endl;
 	}

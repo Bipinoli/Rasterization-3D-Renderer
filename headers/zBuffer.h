@@ -59,25 +59,33 @@ float findIllumination(const Point& point, const Vector& normal, const LightSrc&
 	// because viewing from the origin
 
 
+    float L_dot_N = -dot(L,N);
+    float R_dot_V = -dot(R,V);
+    if (L_dot_N < 0) L_dot_N = 0;
+    if (R_dot_V < 0) R_dot_V = 0;
+
 	// Ambient + Diffused + Specular
 	float intensity = ka + 
-					  kd * -dot(L, N) * light.intensity * (1 / L.length2()) +
-					  ks * pow(-dot(R, V), ns) * light.intensity * (1 / L.length2());
+					  kd * L_dot_N * light.intensity * (1 / L.length2()) +
+					  ks * pow(R_dot_V, ns) * light.intensity * (1 / L.length2());
 
-	// cout << "dot(L,N): " << dot(L,N) << endl;
-	// cout << "dot(R,V): " << dot(R,V) << endl;
-	// cout << "pow(-dot(R, V), ns): " << pow(-dot(R, V), ns) << endl;
-	// cout << "kd part: " << kd * -dot(L, N) * light.intensity * (1 / L.length2()) << endl;
-	// cout << "ks part: " << ks * pow(-dot(R, V), ns) * light.intensity * (1 / L.length2()) << endl;
+
+    // cout << "ka part: " << ka << endl;
+    // cout << "kd part: " << kd * L_dot_N * light.intensity * (1 / L.length2()) << endl;
+    // cout << "ks part: " << ks * pow(R_dot_V, ns) * light.intensity * (1 / L.length2()) << endl;
 
 	return intensity;
 }
 
 
+
+
+
+
 void zBuffer(const LightSrc& light, Camera& camera, 
 			 const Scene& scene, Image& image) 
 {
-	const float ka = 0.1, kd = 0.6, ks = 0.3, ns = 128; 
+	const float ka = 0.1, kd = 0.6, ks = 0.3, ns = 64; 
 
     const int width = image.getWidth();
     const int height = image.getHeight();
@@ -152,7 +160,7 @@ void zBuffer(const LightSrc& light, Camera& camera,
                                       triangle.c1*(1/triangle.v1.z) * baryCentric.y + 
                                       triangle.c2*(1/triangle.v2.z) * baryCentric.z) * -zBaryCen;
 
-                        // Phong model, finding Normal at a point by interpolation
+                        // Phong model, finding Normal at a point of object by interpolation
                         Vector normal = (triangle.n0*(1/triangle.v0.z) * baryCentric.x + 
                                       	triangle.n1*(1/triangle.v1.z) * baryCentric.y + 
                                       	triangle.n2*(1/triangle.v2.z) * baryCentric.z) * -zBaryCen;
@@ -165,6 +173,8 @@ void zBuffer(const LightSrc& light, Camera& camera,
 
                         // ----------------------------------------------------------------------
                         // Identify if that pixel is in shadow
+
+                        /*
 
                         // const float zShadow = (hitPoint - light.position).length();
                         const float zShadow = -(hitPoint.z - light.position.z);
@@ -203,6 +213,8 @@ void zBuffer(const LightSrc& light, Camera& camera,
                         }
 
                         translatePoint(camera.position, -light.position);
+
+                        */
 
                     }
                 }
