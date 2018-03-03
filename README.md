@@ -3,6 +3,9 @@ Rastarization based 3D Renderer with Z-buffer and Phong illumination.
 
 ## current progress
 
+![dragon2](https://user-images.githubusercontent.com/11765482/36934931-f716978e-1f18-11e8-9798-3e8b5dcecb11.PNG)
+![dragon1](https://user-images.githubusercontent.com/11765482/36934934-f99962a2-1f18-11e8-91f8-25f1963c24c6.PNG)
+
 ### Shield of a warrior: after bug fix on translate function :)
 ![rastercapturekabach](https://user-images.githubusercontent.com/11765482/36933366-a984b6c2-1eff-11e8-908f-d5f5a3c8623b.PNG)
 
