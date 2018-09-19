@@ -52,3 +52,7 @@ Requirements: C++11, Python
 ![rastercapture2](https://user-images.githubusercontent.com/11765482/36771135-a501f668-1c76-11e8-8dcf-f7d8626d2af5.PNG)
 
 
+### Authors
+- Bipin Oli bipinoli90@gmail.com
+- Aayush Gautam agautam1997@gmail.com
+- Kuldip Bhutoria 072bct518@pcampus.edu.np
